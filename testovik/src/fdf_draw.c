@@ -6,7 +6,7 @@
 /*   By: hkuhic <hkuhic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/11 17:46:27 by jaleman           #+#    #+#             */
-/*   Updated: 2019/04/22 19:31:28 by hkuhic           ###   ########.fr       */
+/*   Updated: 2019/08/07 20:04:59 by hkuhic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,15 @@ static void	draw_horizontal(t_fdf *fdf, int y, int z)
 	fdf->map.y1 = fdf->map.angle_y * ((yt + 1) - zt) * fdf->map.zoom;
 	fdf->map.z1 = fdf->map.angle_z * ((yt + 1) + zt) * fdf->map.zoom;
 	fdf->map.z1 -= fdf->map.values[z][y + 1] * fdf->map.x_value;
+	fdf->map.y0 = fdf->map.y0 * cos(fdf->map.angle_rot_x) - fdf->map.z0 * sin(fdf->map.angle_rot_x);
+	fdf->map.z0 = fdf->map.y0 * sin(fdf->map.angle_rot_x) + fdf->map.z0 * cos(fdf->map.angle_rot_x);
+	fdf->map.y1 = fdf->map.y1 * cos(fdf->map.angle_rot_x) - fdf->map.z1 * sin(fdf->map.angle_rot_x);
+	fdf->map.z1 = fdf->map.y1 * sin(fdf->map.angle_rot_x) + fdf->map.z1 * cos(fdf->map.angle_rot_x);
+
 	fdf->map.y0 += (WIN_WIDTH / 2) + fdf->map.coordinate_y;
 	fdf->map.y1 += (WIN_WIDTH / 2) + fdf->map.coordinate_y;
-	fdf->map.z0 += (WIN_HEIGHT / 2) + fdf->map.coordinate_z;
-	fdf->map.z1 += (WIN_HEIGHT / 2) + fdf->map.coordinate_z;
+	fdf->map.z0 += (WIN_HEIGHT / 2) - fdf->map.coordinate_z;
+	fdf->map.z1 += (WIN_HEIGHT / 2) - fdf->map.coordinate_z;
 	draw_lines(fdf);
 }
 
@@ -102,16 +107,22 @@ static void	draw_vertical(t_fdf *fdf, int y, int z)
 
 	yt = y - fdf->map.width / 2;
 	zt = z - fdf->map.height / 2;
+
 	fdf->map.y0 = fdf->map.angle_y * (yt - zt) * fdf->map.zoom;
 	fdf->map.z0 = fdf->map.angle_z * (yt + zt) * fdf->map.zoom;
 	fdf->map.z0 -= fdf->map.values[z][y] * fdf->map.x_value;
 	fdf->map.y1 = fdf->map.angle_y * (yt - (zt + 1)) * fdf->map.zoom;
 	fdf->map.z1 = fdf->map.angle_z * (yt + (zt + 1)) * fdf->map.zoom;
 	fdf->map.z1 -= fdf->map.values[z + 1][y] * fdf->map.x_value;
+	fdf->map.y0 = fdf->map.y0 * cos(fdf->map.angle_rot_x) - fdf->map.z0 * sin(fdf->map.angle_rot_x);
+	fdf->map.z0 = fdf->map.y0 * sin(fdf->map.angle_rot_x) + fdf->map.z0 * cos(fdf->map.angle_rot_x);
+	fdf->map.y1 = fdf->map.y1 * cos(fdf->map.angle_rot_x) - fdf->map.z1 * sin(fdf->map.angle_rot_x);
+	fdf->map.z1 = fdf->map.y1 * sin(fdf->map.angle_rot_x) + fdf->map.z1 * cos(fdf->map.angle_rot_x);
+
 	fdf->map.y0 += (WIN_WIDTH / 2) + fdf->map.coordinate_y;
 	fdf->map.y1 += (WIN_WIDTH / 2) + fdf->map.coordinate_y;
-	fdf->map.z0 += (WIN_HEIGHT / 2) + fdf->map.coordinate_z;
-	fdf->map.z1 += (WIN_HEIGHT / 2) + fdf->map.coordinate_z;
+	fdf->map.z0 += (WIN_HEIGHT / 2) - fdf->map.coordinate_z;
+	fdf->map.z1 += (WIN_HEIGHT / 2) - fdf->map.coordinate_z;
 	draw_lines(fdf);
 }
 
@@ -122,6 +133,7 @@ static void	draw_vertical(t_fdf *fdf, int y, int z)
 ** @h -> horizontal
 ** @v -> vertical
 */
+
 
 int			fdf_draw(t_fdf *fdf)
 {

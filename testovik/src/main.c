@@ -6,7 +6,7 @@
 /*   By: hkuhic <hkuhic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/21 16:05:24 by jaleman           #+#    #+#             */
-/*   Updated: 2019/07/24 22:23:00 by hkuhic           ###   ########.fr       */
+/*   Updated: 2019/08/07 19:18:55 by hkuhic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,10 @@ static void	reset_map(t_fdf *fdf)
 {
 	fdf->map.coordinate_z = 0;
 	fdf->map.coordinate_y = 0;
-	fdf->map.x_value = 1.00;
+	fdf->map.x_value = -1.00;
+	fdf->map.angle_rot_x = 0;
+	fdf->map.angle_rot_y = 0;
+	fdf->map.angle_rot_z = 0;
 	fdf->map.angle_y = cos(M_PI / 3);
 	fdf->map.angle_z = fdf->map.angle_y * sin(M_PI / 6);
 	fdf->map.zoom = ceil((fdf->map.width > fdf->map.height)) \
@@ -50,7 +53,6 @@ static void	reset_map(t_fdf *fdf)
 	fdf->color.green = 0x4F;
 	fdf->color.blue = 0x4F;
 }
-
 /*
 ** Colorize the map with a random color.
 ** Colors go from 0x00 to 0x7F, because of technical issues (integer overflow).
@@ -67,7 +69,7 @@ static void	random_color(t_fdf *fdf)
 ** Assign a key code (macros defined in "includes/keys.h") to a specific task,
 ** like changing colors, moving the map, changing the view, zoom level, etc.
 ** There is an ugly code for changing the view (angle) of the map, because of
-** norm... I guess? Everytime "map.isometric" isn't even, rotate the map.
+** norm... I guess? Everytime "map.isometric" isn't even, map the map.
 */
 
 static int	fdf_keys(int keycode, t_fdf *fdf)
@@ -79,17 +81,17 @@ static int	fdf_keys(int keycode, t_fdf *fdf)
 	else if (keycode == KEY_ANSI_M)
 		random_color(fdf);
 	else if (keycode == KEY_ANSI_W || keycode == 126)
-		fdf->map.coordinate_z -= 3;
-	else if (keycode == KEY_ANSI_S || keycode == KEY_DOWNARROW)
 		fdf->map.coordinate_z += 3;
+	else if (keycode == KEY_ANSI_S || keycode == KEY_DOWNARROW)
+		fdf->map.coordinate_z -= 3;
 	else if (keycode == KEY_ANSI_D || keycode == KEY_RIGHTARROW)
 		fdf->map.coordinate_y += 3;
 	else if (keycode == KEY_ANSI_A || keycode == KEY_LEFTARROW)
 		fdf->map.coordinate_y -= 3;
 	else if (keycode == KEY_ANSI_B)
-		fdf->map.zoom += 3;
+		fdf->map.zoom += 10;
 	else if ((keycode == KEY_ANSI_N) && (fdf->map.zoom > MAX_ZOOM))
-		fdf->map.zoom -= 3;
+		fdf->map.zoom -= 10;
 	else if ((keycode == KEY_ANSI_J) && (fdf->map.x_value < MAX_X))
 		fdf->map.x_value += 0.25;
 	else if ((keycode == 40) && (fdf->map.x_value > -MAX_X))
@@ -97,9 +99,12 @@ static int	fdf_keys(int keycode, t_fdf *fdf)
 	else if (keycode == KEY_SPACE)
 		fdf->map.angle_z *= (fdf->map.isometric++ % 2) ? 0.2 : 5;
 	else if (keycode == 4)
-	{	
-		fdf->map.x_value = fdf->map.coordinate_z * sin(M_PI / 6) + fdf->map.coordinate_y * cos(M_PI / 6);
-	}
+		fdf->map.angle_rot_x += M_PI / 4;
+	else if (keycode == 5)
+		fdf->map.angle_rot_y += M_PI / 4;
+	else if (keycode == 3)
+		fdf->map.angle_rot_z += M_PI / 4;
+	fdf_draw(fdf);
 	return (0);
 }
 

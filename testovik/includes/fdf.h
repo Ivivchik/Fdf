@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaleman <jaleman@student.42.us.org>        +#+  +:+       +#+        */
+/*   By: hkuhic <hkuhic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/22 02:29:54 by jaleman           #+#    #+#             */
-/*   Updated: 2017/02/22 02:29:54 by jaleman          ###   ########.fr       */
+/*   Updated: 2019/08/07 18:53:48 by hkuhic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,26 @@ typedef struct	s_map
 	int		height;
 	int		coordinate_y;
 	int		coordinate_z;
-	int		y0;
-	int		y1;
-	int		z0;
-	int		z1;
+	double	y0;
+	double	y1;
+	double	z0;
+	double	z1;
 	int		zoom;
 	int		isometric;
+	double	rotate_y0;
+	double	rotate_z0;
+	double	rotate_x;
+	double	rotate_y1;
+	double	rotate_z1;
 	double	x_value;
 	double	angle_y;
 	double	angle_z;
+	double	angle_rot_x;
+	double	angle_rot_y;
+	double	angle_rot_z;
+
 }				t_map;
+
 
 typedef struct	s_color
 {
